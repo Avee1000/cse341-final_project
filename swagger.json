@@ -5,10 +5,10 @@
     "description": "API for managing user contacts",
     "version": "1.0.0"
   },
-  "host": "localhost:3000",
+  "host": "cse341-final-project-0k64.onrender.com",
   "basePath": "/",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/users/api/cars/{id}": {
@@ -303,7 +303,7 @@
       }
     },
     "/users/accounts/{id}": {
-      "get": {
+      "put": {
         "description": "",
         "parameters": [
           {
@@ -311,6 +311,24 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "example": "any"
+                },
+                "displayName": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
