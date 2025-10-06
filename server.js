@@ -19,6 +19,7 @@ const carsRoute = require("./routes/cars-route");
 const classificationRoute = require("./routes/class-route");
 const authRoute = require("./routes/auth");
 const usersRoute = require("./routes/users-route")
+const suggestionsRoute = require("./routes/suggestion-route");
 
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./swagger.json");
@@ -64,7 +65,6 @@ passport.use(new GitHub({
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
   callbackURL: process.env.GITHUB_CALLBACK_URL,
 }, async (accessToken, refreshToken, profile, done) => {
-  console.log(profile);
   try {
 
     let user = await User.findOne({ githubId: profile.id });
@@ -112,6 +112,7 @@ app.use("/", carsRoute);
 app.use("/", classificationRoute);
 app.use("/auth", authRoute);
 app.use("/", usersRoute)
+app.use("/", suggestionsRoute);
 
 // 404 handler
 app.use(async (req, res, next) => {

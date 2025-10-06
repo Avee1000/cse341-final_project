@@ -25,8 +25,8 @@ router.get(
     session: true, // enables session login
   }),
   (req, res) => {
-      console.log("🎉 GitHub authentication successful!");
-      req.session.user = req.user;
+    console.log("🎉 GitHub authentication successful!");
+    req.session.user = req.user;
     // Passport automatically stores the user in the session
     res.redirect("/api-docs");
   }

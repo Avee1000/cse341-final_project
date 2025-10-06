@@ -2,6 +2,7 @@ const db = require('../models');
 const Classification = db.classification;
 const Cars = db.cars;
 const User = db.users;
+const Suggestion = db.suggestions;
 const mongoose = require('mongoose');
 
 const invCont = {};
@@ -467,6 +468,45 @@ invCont.editUsers = async (req, res, next) => {
     }
 }
 
+invCont.getAllSuggestions = async (req, res, next) => {
+    try {
+        const result = await Suggestion.find({});
 
+        if (!result) {
+            res.status(400).json("No suggestions found");
+        }   
+
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json(`${error}`);
+        console.error(`${error}`);
+    }
+}
+
+invCont.createSuggestion = async (req, res, next) => {
+    try {
+        const {
+            suggestion
+        } = req.body;
+
+        const result = await Suggestion.create({
+            githubId: req.session.user.id,
+            suggestion: suggestion
+        });
+
+        if (!result) {
+            res.status(400).json("Cannot create suggestion");
+            return next({
+                status: 404,
+                message: "Suggestion Not Found"
+            });
+        }
+
+        res.status(201).json(result);
+    } catch (error) {
+        res.status(500).json(`${error}`);
+        console.error(`${error}`);
+    }
+}
 
 module.exports = invCont;

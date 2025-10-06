@@ -9,5 +9,6 @@ db.url = dbConfig.url;
 db.classification = require('./classification.js')(mongoose);
 db.cars = require('./cars.js')(mongoose);
 db.users = require('./users.js')(mongoose);
+db.suggestions = require('./suggestions.js')(mongoose);
 
 module.exports = db;
