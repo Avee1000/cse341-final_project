@@ -48,25 +48,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json());
 
-// Ensure API responses default to JSON for API routes or when client accepts JSON
-app.use((req, res, next) => {
-  try {
-    const accept = req.get('Accept') || '';
-    if (req.path.startsWith('/users/api') || req.path.startsWith('/api') || accept.includes('application/json')) {
-      // Only set header if not already set to avoid overwriting explicit content types
-      if (!res.getHeader('Content-Type')) {
-        res.setHeader('Content-Type', 'application/json');
-      }
-    }
-  } catch (err) {
-    // don't break the request pipeline on header errors
-  }
-  next();
-});
-
-// Swagger UI (register before static files so a public /api-docs folder won't shadow this route)
+// Swagger 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -112,7 +95,6 @@ passport.deserializeUser((obj, done) => {
   done(null, obj);
 })
 
-// GraphQL
 app.use("/graphql", graphqlHTTP({
   schema: schema,
   graphiql: true,

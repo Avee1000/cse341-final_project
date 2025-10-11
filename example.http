@@ -1,4 +1,4 @@
-GET http://localhost:8080/users/api/contact/
+GET http://localhost:8080/users/api/cars/
 
 ####
 GET http://localhost:8000/users/api/cars/68d537d38ff59e09a75806e9
