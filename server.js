@@ -48,6 +48,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json());
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -93,8 +94,6 @@ passport.deserializeUser((obj, done) => {
   done(null, obj);
 })
 
-// Swagger and GraphQL
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/graphql", graphqlHTTP({
   schema: schema,
   graphiql: true,
