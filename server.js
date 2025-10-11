@@ -48,8 +48,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json());
 
-// Swagger 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -95,6 +93,8 @@ passport.deserializeUser((obj, done) => {
   done(null, obj);
 })
 
+// Swagger and GraphQL
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/graphql", graphqlHTTP({
   schema: schema,
   graphiql: true,
@@ -143,9 +143,4 @@ db.mongoose
 
 // Server
 const PORT = process.env.PORT || 8000;
-// Only start the server when this module is the main module (not when required by tests)
-if (require.main === module) {
-  app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
-}
-
-module.exports = app;
+app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
