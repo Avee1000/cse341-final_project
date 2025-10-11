@@ -48,6 +48,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(bodyParser.json());
 
+// Ensure API responses default to JSON for API routes or when client accepts JSON
+app.use((req, res, next) => {
+  try {
+    const accept = req.get('Accept') || '';
+    if (req.path.startsWith('/users/api') || req.path.startsWith('/api') || accept.includes('application/json')) {
+      // Only set header if not already set to avoid overwriting explicit content types
+      if (!res.getHeader('Content-Type')) {
+        res.setHeader('Content-Type', 'application/json');
+      }
+    }
+  } catch (err) {
+    // don't break the request pipeline on header errors
+  }
+  next();
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -143,4 +159,9 @@ db.mongoose
 
 // Server
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+// Only start the server when this module is the main module (not when required by tests)
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+}
+
+module.exports = app;

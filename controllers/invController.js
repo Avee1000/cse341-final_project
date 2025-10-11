@@ -81,7 +81,7 @@ invCont.getOneCar = async (req, res, next) => {
         } = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            res.status(400).send("Invalid Car ID");
+            res.status(400).json({ message: "Invalid Car ID" });
             return next({
                 status: 400,
                 message: "Invalid Car ID"
@@ -90,7 +90,7 @@ invCont.getOneCar = async (req, res, next) => {
 
         const car = await Cars.findById(id);
         if (!car) {
-            res.status(404).send("Car Not Found");
+            res.status(404).json({ message: "Car Not Found" });
             return next({
                 status: 404,
                 message: "Car Not Found"
@@ -112,7 +112,7 @@ invCont.getAllCars = async (req, res, next) => {
     try {
         const cars = await Cars.find({});
         if (!cars || cars.length === 0) {
-            res.status(404).send("No Cars Found");
+            res.status(404).json({ message: "No Cars Found" });
             return next({
                 status: 404,
                 message: "No Cars Found"
@@ -133,7 +133,7 @@ invCont.getAllClassifications = async (req, res, next) => {
     try {
         const classifications = await Classification.find({});
         if (!classifications || classifications.length === 0) {
-            res.status(400).send("No Classifications Found");
+            res.status(400).json({ message: "No Classifications Found" });
             return next({
                 status: 400,
                 message: "No Classifications Found"
@@ -178,7 +178,7 @@ invCont.createCars = async (req, res, next) => {
 
         const car = await Cars.create(newCar);
         if (!car) {
-            res.status(400).send("Cannot Create Car");
+            res.status(400).json({ message: "Cannot Create Car" });
             return next({
                 status: 500,
                 message: "Server Error"
@@ -188,10 +188,10 @@ invCont.createCars = async (req, res, next) => {
         res.status(201).json(car);
     } catch (error) {
         console.error("🔥 Error creating car:", error);
-        res.status(400).send(error);
+        res.status(400).json({ error: String(error) });
         next({
             status: 500,
-            message: error
+            message: String(error)
         });
     }
 };
@@ -207,22 +207,22 @@ invCont.createClassification = async (req, res, next) => {
             description
         });
         if (!classification) {
-            res.status(400).send("Cannot Create Classification");
-            return next({
-                status: 500,
-                message: "Server Error"
-            });
+            res.status(400).json({ message: "Cannot Create Classification" });
+            // return next({
+            //     status: 500,
+            //     message: "Server Error"
+            // });
         }
 
         res.status(201).json(classification);
     } catch (error) {
         console.error("🔥 Error creating classification:", error);
-        res.status(400).send(`${error}`);
+        res.status(400).json({ error: String(error) });
 
-        next({
-            status: 500,
-            message: "Server Error"
-        });
+        // next({
+        //     status: 500,
+        //     message: "Server Error"
+        // });
     }
 }
 
