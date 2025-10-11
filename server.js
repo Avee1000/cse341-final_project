@@ -64,6 +64,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Swagger UI (register before static files so a public /api-docs folder won't shadow this route)
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -109,8 +112,7 @@ passport.deserializeUser((obj, done) => {
   done(null, obj);
 })
 
-// Swagger and GraphQL
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// GraphQL
 app.use("/graphql", graphqlHTTP({
   schema: schema,
   graphiql: true,
