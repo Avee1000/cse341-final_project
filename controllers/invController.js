@@ -418,6 +418,34 @@ invCont.getAllUsers = async (req, res, next) => {
 
 }
 
+invCont.createUsers = async (req, res, next) => {
+    try {
+        const {
+            githubId,
+            username,
+            displayName,
+            email
+        } = req.body;
+
+        const user = await User.create({
+            githubId,
+            username,
+            displayName,
+            email
+        });
+
+        if (!user) {
+            res.status(400).send("Cannot create user");
+        }
+
+        res.status(201).json(user);
+
+    } catch (error) {
+        console.error(`${error}`);
+        res.status(500).json(error)
+    }
+}
+
 invCont.editUsers = async (req, res, next) => {
     try {
         const {
@@ -432,39 +460,62 @@ invCont.editUsers = async (req, res, next) => {
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             res.status(400).send("Invalid User ID");
-            return next({
-                status: 400,
-                message: "Invalid User ID"
-            });
+
         }
 
         const result = await User.findByIdAndUpdate(
             id, {
-            $set: {
-                username: username,
-                displayName: displayName,
-                email: email
+                $set: {
+                    username: username,
+                    displayName: displayName,
+                    email: email
+                }
+            }, {
+                new: true
             }
-        }, {
-            new: true
-        }
         );
 
         if (!result) {
             res.status(400).send("Cannot edit user");
-            return next({
-                status: 404,
-                message: "User Not Found"
-            });
         }
 
         res.status(201).json(result);
+
     } catch (error) {
         console.error("🔥 Error updating user:", error);
         next({
             status: 500,
             message: "Server Error"
         });
+    }
+}
+
+invCont.deleteUsers = async (req, res, next) => {
+    try {
+        const {
+            id
+        } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            res.status(400).send("Invalid User ID");
+            return next({
+                status: 400,
+                message: "Invalid User ID"
+            });
+        }
+
+        const user = await User.findByIdAndDelete(id);
+        if (!user) {
+            return next({
+                status: 400,
+                message: "User Not Found"
+            });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.error("🔥 Error deleting user:", error);
+        res.status(500).json(`${error}`)
     }
 }
 
@@ -506,6 +557,79 @@ invCont.createSuggestion = async (req, res, next) => {
     } catch (error) {
         res.status(500).json(`${error}`);
         console.error(`${error}`);
+    }
+}
+
+invCont.editSuggestion = async (req, res, next) => {
+    try {
+        const {
+            id
+        } = req.params;
+
+        const {
+            suggestion
+        } = req.body;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            res.status(400).send("Invalid Suggestion ID");
+            // return next({
+            //     status: 400,
+            //     message: "Invalid Suggestion ID"
+            // });
+        }
+
+        const result = await Suggestion.findByIdAndUpdate(
+            id, {
+            $set: {
+                suggestion: suggestion
+            }
+        }, {
+            new: true
+        }
+        );
+
+        if (!result) {
+            res.status(400).send("Cannot edit suggestion");
+            // return next({
+            //     status: 404,
+            //     message: "Suggestion Not Found"
+            // });
+        }
+
+        res.status(201).json(result);
+        
+    } catch (error) {
+        console.error(`${error}`);
+        res.status(500).json(`${error}`)
+    }
+}
+
+invCont.deleteSuggestion = async (req, res, next) => {
+    try {
+        const {
+            id
+        } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            res.status(400).send("Invalid Suggestion ID");
+            return next({
+                status: 400,
+                message: "Invalid Suggestion ID"
+            });
+        }
+
+        const suggestion = await Suggestion.findByIdAndDelete(id);
+        if (!suggestion) {
+            return next({
+                status: 400,
+                message: "Suggestion Not Found"
+            });
+        }
+
+        res.status(201).json(suggestion);
+    } catch (error) {
+        console.error("🔥 Error deleting suggestion:", error);
+        res.status(500).json(`${error}`)
     }
 }
 
